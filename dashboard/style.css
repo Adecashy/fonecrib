@@ -1,0 +1,194 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family: sans-serif;
+}
+header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: .8rem 10rem;
+    align-items: center;
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+
+    .nav-title{
+        display: flex;
+        gap: 2rem;
+        
+        a{
+            text-decoration: none;
+            color: #000000;
+            font-size: 19px;
+            font-weight: 600;
+        }
+        a:hover{
+            color: #6c4cef;
+        }
+    }
+    .icon-bar{
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        align-items: center;
+
+        .cart{
+            position: relative;
+
+            span{
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background-color: #f19833;
+                color: #fff;
+                text-align: center;
+                right: -10px;
+                top: -6px;
+            }
+        }
+    }
+    button{
+        padding: .5rem .8rem;
+        background-color: red;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+}
+.section-one{
+    background-color: #211c24;
+    height: 600px;
+    
+    .container{
+        display: flex;
+        justify-content: space-between;
+        width: 70%;
+        margin: 0 auto;
+        align-items: center;
+        padding: 2rem;
+
+        .welcome-title{
+            margin-top: 5rem;
+            h4{
+                color: #6c4cef;
+                background-color: #fff;
+                border-radius: 20px;
+                padding: .5rem 1rem;
+                width: 230px;
+                margin-bottom: 15px;
+            }
+            p{
+                color: #fff;
+                font-size: 48px;
+                line-height: 48px;
+                font-weight: 700;
+                width: 450px;
+                margin-bottom: 15px;
+            }
+            span{
+                color: #6c4cef;
+            }
+            button{
+                background-color: #8455c4;
+                padding: 1rem;
+                border: none;
+                border-radius: 20px;
+                color: #fff;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+            }
+        }
+    }
+}
+.section-three{
+    margin: 50px;
+
+    h4{
+        font-size: 28px;
+    }
+    .categories{
+        display: flex;
+        gap: 2rem;
+        margin-top: 20px;
+        margin-left: 40px;
+        align-items: center;
+        cursor: pointer;
+
+        .all{
+            font-size: 22px;
+            font-weight: 600;
+            border-bottom: 3px solid;
+        }
+    }
+
+    #display-products{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        width: 80%;
+        margin: 3rem auto;
+        gap: .5rem;
+
+        .product-card{
+            /* background-color: #f6f6f6; */
+            display: flex;
+            flex-direction: column;
+            padding: 3rem .5rem;
+            align-items: center;
+            gap: .6rem;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
+
+            button{
+                padding: .5rem 2rem;
+                border-radius: 5px;
+                border: none;
+                cursor: pointer;
+            }
+            .cart-btn{
+                background-color: #f19833;
+                color: #fff;
+                }
+            .details-btn{
+                background-color: #fff;
+                color: #000000;
+                border: 1px solid;
+            }
+        }
+    }
+}
+
+footer{
+    background-color: #000000;
+
+    .ft-title{
+        display: flex;
+        flex-direction: row;
+        gap: 10rem;
+        padding: 5rem;
+        color: #fff;
+        width: 70%;
+        margin: 0 auto;
+        line-height: 34px;
+        /* align-items: center; */
+
+        h3{
+            color: #6c4cef;
+            margin-bottom: 20px;
+        }
+    }
+    .ft-logo{
+        color: #66b3c4;
+        margin-left: 10px;
+        padding: 100px;
+
+        img{
+            background-color: #fff;
+        }
+    }
+}

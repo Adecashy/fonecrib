@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="header">
+        <img src="../images & icons/logo.png" alt="" width="80px">
+        <h3>Sign up for FoneCrib</h3>
+    </div>
+    <div class="container">
+        <form id="signup-form">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="signup-email" placeholder="Enter Email">
+            </div>
+            <div>
+                <label for="name">Name</label>
+                <input type="text"  id="signup-name" placeholder="Enter Name">
+            </div>
+            <div>
+                <label for="gender">Gender</label>
+                <select  id="signup-gender">
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                </select>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="signup-password" placeholder="Enter Password">
+            </div>
+            <div>
+                <label for="password">Confirm Password</label>
+                <input type="password" name="password" id="confirm-signup-password" placeholder="Re-enter Password">
+            </div>
+            <button id="signup-btn">Create Account</button>
+        </form>
+        <p id="error-message"></p>
+
+        <p>Already have an account? <a href="../signin/index.html">Login</a></p>
+    </div>
+
+
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

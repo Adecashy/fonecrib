@@ -1,0 +1,203 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family: sans-serif;
+}
+header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: .8rem 10rem;
+    align-items: center;
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    margin-top: -8rem;
+
+    .nav-title{
+        display: flex;
+        gap: 1.5rem;
+        
+        a{
+            text-decoration: none;
+            color: #000000;
+            font-size: 19px;
+            font-weight: 600;
+        }
+        a:hover{
+            color: #6c4cef;
+        }
+    }
+    .icon-bar{
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        align-items: center;
+
+        .cart{
+            position: relative;
+
+            span{
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background-color: #f19833;
+                color: #fff;
+                text-align: center;
+                right: -10px;
+                top: -6px;
+            }
+        }
+    }
+    button{
+        padding: .5rem .8rem;
+        background-color: red;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+}
+.section-one{
+    margin-top: 8rem;
+
+    .title{
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        color: #66b3c4;
+        margin-left: 3rem;
+    }
+}
+.section-two{
+    margin: 5rem 2rem;
+    display: flex;
+    gap: 2rem;
+
+    #display-cart-items{
+        width: 60%;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+        padding: 3rem 2rem;
+        
+        .cart-item{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+
+            .left{
+                display: flex;
+                gap: 1rem;
+                line-height: 24px;
+            }
+            .right{
+                display: flex;
+                flex-direction: column;
+                gap: .5rem;
+                align-items: center;
+
+                .math button{
+                    font-size: 22px;
+                    padding: .1rem .5rem;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+                .math .inc-btn{
+                    background-color: #f19833;
+                    color: #fff;
+                    padding: .01rem .4rem;
+                }
+                .delete-btn{
+                    padding: .2rem .8rem;
+                    background-color: red;
+                    border: none;
+                    color: #fff;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    cursor: pointer;
+                }
+            }
+        }
+        .empty-cart button{
+            padding: .8rem 5rem;
+            margin-top: 1rem;
+            border: none;
+            background-color: #f19833;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    }
+    .cart-summary{
+        width: 40%;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+        padding: 1rem;
+
+        h2{
+            margin-bottom: 2rem;
+        }
+        #cart-totals{
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+
+            p{
+                display: flex;
+                justify-content: space-between;
+                color: #909090;
+                
+                span{
+                    color: #000000;
+                }
+            }
+            .total{
+                color: black;
+                font-size: 16px;
+                font-weight: 600;
+            }
+            button{
+                padding: 1.5rem;
+                color: #fff;
+                background-color: #54a857;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+footer{
+    background-color: #000000;
+
+    .ft-title{
+        display: flex;
+        flex-direction: row;
+        gap: 10rem;
+        padding: 5rem;
+        color: #fff;
+        width: 70%;
+        margin: 0 auto;
+        line-height: 34px;
+        /* align-items: center; */
+
+        h3{
+            color: #6c4cef;
+            margin-bottom: 20px;
+        }
+    }
+    .ft-logo{
+        color: #66b3c4;
+        margin-left: 10px;
+        padding: 100px;
+
+        img{
+            background-color: #fff;
+        }
+    }
+}
