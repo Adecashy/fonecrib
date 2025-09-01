@@ -13,6 +13,7 @@ const productNameEl = getElement("#product-name");
 const userImageEl = getElement("#user-image");
 const loginBtnEl = getElement("#login-btn")
 const logoutBtnEl = getElement("#logout-btn")
+const cartBtnEl = getElement("#cart-btn")
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -27,6 +28,9 @@ onAuthStateChanged(auth, (user) => {
     }
     if (!user) {
         logoutBtnEl.style.display = "none"
+        cartBtnEl.addEventListener("click", ()=>{
+            alert("Please login")
+        })
     }
 })
 

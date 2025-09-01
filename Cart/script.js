@@ -1,5 +1,5 @@
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { getFirestore, collection, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { app } from "../firebase/config.js";
 import { getElement } from "../functions/utils.js";
 import { getCartNumbers, getCartItems, removeCartItem } from "../functions/cartfunctions.js";
@@ -16,15 +16,16 @@ onAuthStateChanged(auth, (user) => {
         fetchCartItems();
         displayUser()
     }
-    if (!user) {
-        alert("kindly login.");
-        return;
-    }
 });
 
 const displayCartItemEl = getElement("#display-cart-items");
 const noOfCartEl = getElement("#no-of-cart")
 const userImageEl = getElement("#user-image")
+const logoutBtnEl = getElement("#logout-btn")
+const proceedBtnEl = getElement("#proceed-btn")
+
+const cardForm = document.getElementById("card-payment-form");
+const amountToPayInput = document.getElementById("amount-to-pay");
 
 // Elements for totals breakdown
 let subtotalEl = getElement("#subtotal");
@@ -48,6 +49,11 @@ const displayUser = async () => {
         console.error("Error fetching user:", error)
     }
 }
+
+logoutBtnEl.addEventListener("click", () => {
+    signOut(auth)
+    window.location.href = "../homepage/index.html"
+})
 
 const updateCartTotal = () => {
     let subtotal = 0;
@@ -90,6 +96,10 @@ const updateCartTotal = () => {
     taxEl.textContent = ` $${tax.toFixed(2)}`;
     shippingEl.textContent = ` $${shipping.toFixed(2)}`;
     cartTotalEl.textContent = ` $${grandTotal.toFixed(2)}`;
+
+    if (amountToPayInput) {
+        amountToPayInput.value = `$${grandTotal.toFixed(2)}`;
+    }
 };
 
 const attachCartEventListeners = () => {
@@ -190,3 +200,96 @@ const fetchCartItems = async () => {
         console.error(error);
     }
 };
+
+proceedBtnEl.addEventListener("click", ()=>{
+    getElement("#section-three").scrollIntoView({
+        behavior: "smooth"
+    })
+})
+
+const formBtnEl = document.getElementById("form-btn");
+
+const payment = async () => {
+    formBtnEl.disabled = true
+    formBtnEl.textContent = "PROCESSING..."
+
+    // Get element references
+    const cardholderNameEl = document.getElementById("cardholder-name");
+    const cardNumberEl = document.getElementById("card-number");
+    const expiryDateEl = document.getElementById("expiry-date");
+    const cvvEl = document.getElementById("cvv");   
+
+    // Get trimmed values
+    const cardholderName = cardholderNameEl.value.trim();
+    const cardNumber = cardNumberEl.value.trim();
+    const expiryDate = expiryDateEl.value.trim();
+    const cvv = cvvEl.value.trim();
+
+    try {
+        if (!cardholderName || !cardNumber || !expiryDate || !cvv) {
+            alert("Please fill in all card details.");
+            return;
+        }
+
+        // Simulate processing
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        alert(`Payment successful for ${cardholderName}`);
+
+        await clearCart()
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+        formBtnEl.textContent = "PAY NOW";
+
+        // Reset form fields
+        cardholderNameEl.value = "";
+        cardNumberEl.value = "";
+        expiryDateEl.value = "";
+        cvvEl.value = "";
+    }
+};
+
+// Attach event listener if form exists
+if (cardForm) {
+    cardForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        payment();
+    });
+}
+
+const clearCart = async () => {
+    try {
+        const cartRef = collection(DB, "users", currentUser.uid, "cart");
+        const cartSnapshot = await getDocs(cartRef);
+
+        const deletePromises = cartSnapshot.docs.map((item) => 
+            deleteDoc(doc(DB, "users", currentUser.uid, "cart", item.id))
+        );
+
+        await Promise.all(deletePromises);
+        getCartNumbers()
+
+        // Reset UI
+        displayCartItemEl.innerHTML = `
+            <div class="empty-cart">
+                <h3>Thank you! Your payment was successful 🎉</h3>
+                <a href="../dashboard/index.html"><button>Continue Shopping</button></a>
+            </div>
+        `;
+        noOfCartEl.textContent = "0";
+        if (subtotalEl) subtotalEl.textContent = "$0.00";
+        if (taxEl) taxEl.textContent = "$0.00";
+        if (shippingEl) shippingEl.textContent = "$0.00";
+        cartTotalEl.textContent = "$0.00";
+
+        displayCartItemEl.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    } catch (error) {
+        console.error("Error clearing cart:", error);
+    }
+};
+

@@ -31,6 +31,7 @@ const signup = async () => {
 
     signupButtonEl.textContent = 'Authenticating...';
     signupButtonEl.disabled = true;
+    errorMessageEl.textContent = ""
 
     try {
         const userCredentials = await createUserWithEmailAndPassword(auth, emailEl.value, passwordEl.value);

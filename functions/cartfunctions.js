@@ -12,7 +12,7 @@ export const addToCart = async (productId) => {
     try {
         const user = auth.currentUser;
         if (!user) {
-            alert("Please log in to add to cart.");
+            alert("Please login to add to cart.");
             return;
         }
 

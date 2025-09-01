@@ -48,8 +48,13 @@ header{
                 background-color: #f19833;
                 color: #fff;
                 text-align: center;
-                right: -10px;
-                top: -6px;
+                right: 2px;
+                top: 2px;
+            }
+            button{
+                border: none;
+                background: none;
+                cursor: pointer;
             }
         }
     }

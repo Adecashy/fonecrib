@@ -39,6 +39,7 @@ header{
 
         .cart{
             position: relative;
+            cursor: pointer;
 
             span{
                 position: absolute;
@@ -60,6 +61,7 @@ header{
         border: none;
         border-radius: 5px;
         font-weight: 600;
+        cursor: pointer;
     }
 }
 .section-one{
@@ -137,7 +139,7 @@ header{
     .cart-summary{
         width: 40%;
         box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
-        padding: 1rem;
+        padding: 1.5rem;
 
         h2{
             margin-bottom: 2rem;
@@ -164,12 +166,45 @@ header{
             button{
                 padding: 1.5rem;
                 color: #fff;
-                background-color: #54a857;
+                background: #28a745;
                 border: none;
                 font-size: 16px;
                 cursor: pointer;
             }
         }
+    }
+}
+.section-three{
+    margin-bottom: 5rem;
+
+    h3{
+        margin-bottom: 2rem;
+    }
+    #payment-section{
+        width: 50%;
+        margin: auto;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+        padding: 1.5rem;
+    }
+    .inner-div{
+        display: flex;
+        gap: 2rem;
+    }
+    input{
+        padding: 20px 15px;
+        border: none;
+        background: #ededed;
+        border-radius: 10px;
+        font-size: 15px;
+        margin-top: 8px;
+    }
+    button{
+        padding: 1.5rem;
+        font-size: 16px;
+    }
+    button:disabled {
+        background-color: #999;
+        cursor: not-allowed;
     }
 }
 footer{

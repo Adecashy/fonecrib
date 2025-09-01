@@ -15,6 +15,7 @@ import { getAuth, signInWithEmailAndPassword, sendEmailVerification } from "http
         const signIn = async () => {
             signinButtonEl.disabled = true
             signinButtonEl.textContent = "Loading..."
+            errorMessageEl.textContent = ""
             try {
                 const userCredentials = await signInWithEmailAndPassword(auth, signinEmail.value, signinPassword.value)
                 console.log(userCredentials.user.emailVerified)

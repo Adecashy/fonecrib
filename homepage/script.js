@@ -1,14 +1,26 @@
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { getFirestore, collection, doc, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { app } from "../firebase/config.js"
 import { getElement } from "../functions/utils.js"
 import { addToCart } from "../functions/cartfunctions.js";
 
+const auth = getAuth(app)
 const DB = getFirestore(app)
 const recipeColRef = collection(DB, "products")
+let currentUser;
 
 const displayProductsEl = getElement("#display-products")
 const loginBtnEl = getElement("#login-btn")
 const getStartedBtnEl = getElement("#get-started-btn")
+const cartBtnEl = getElement("#cart-btn")
+
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        cartBtnEl.addEventListener("click", ()=>{
+            alert("Please login")
+        })
+    }
+})
 
 loginBtnEl.addEventListener("click", ()=>{
     window.location.href = "../signin/index.html"
