@@ -1,8 +1,8 @@
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { getFirestore, collection, doc, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-import { app } from "../firebase/config.js"
-import { getElement } from "../functions/utils.js"
-import { addToCart } from "../functions/cartfunctions.js";
+import { app } from "./firebase/config.js"
+import { getElement } from "./functions/utils.js"
+import { addToCart } from "./functions/cartfunctions.js";
 
 const auth = getAuth(app)
 const DB = getFirestore(app)
