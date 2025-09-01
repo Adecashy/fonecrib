@@ -45,7 +45,7 @@ const displayUser = async () => {
 // Logout Button
 logoutBtn.addEventListener("click", () => {
     signOut(auth)
-    window.location.href = "../homepage/index.html"
+    window.location.href = "../index.html"
 })
 
 // Fetch and Display Products
