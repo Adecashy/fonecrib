@@ -1,98 +1,187 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="description" content="Discover smartphones, laptops, headphones and more at FoneCrib.">
+    <title>FoneCrib | Discover Your Next Device</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body id="home">
-     <header>
-        <div class="logo">
-            <img src="../images & icons/logo.png" alt="" width="60px">
-        </div>
-        <div class="nav-title">
-            <a href="#home">Home</a>
-            <a href="#products">Products</a>
-            <a href="#categories">Categories</a>
-            <a href="#about-us">About Us</a>
-        </div>
-        <div class="icon-bar">
-            <div class="cart">
-                <a href="../Cart/index.html"><img src="../images & icons/cart.png" alt="" width="30px"></a>
-                <span id="cart-no">0</span>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-container">
+
+            <a href="#home" class="logo">
+                <img src="../images & icons/logo.png" alt="FoneCrib logo">
+            </a>
+
+            <nav class="nav-title">
+                <a href="#home" class="active">Home</a>
+                <a href="#products">Products</a>
+                <a href="#categories">Categories</a>
+                <a href="#about-us">About Us</a>
+            </nav>
+
+            <div class="icon-bar">
+
+                <a href="../Cart/index.html" class="cart">
+                    <img src="../images & icons/cart.png" alt="Shopping cart">
+                    <span id="cart-no">0</span>
+                </a>
+
+                <div id="user-image" class="user-image">
+                    <img src="../images & icons/profile.png" alt="User profile">
+                </div>
+
+                <button id="logout-btn" type="button">Logout</button>
+
             </div>
-            <div id="user-image">
-                <img src="../images & icons/profile.png" alt="" width="20px">
-            </div>
-            <button id="logout-btn">Logout</button>
         </div>
     </header>
-    <section class="section-one">
-        <div class="container">
-            <div class="welcome-title">
-                <h4>Welcome, <span id="user-name"></span></h4>
-                <p>Access granted to the future of mobile tech. Let’s <span>power up</span> your gadgets game!</p>
-                <!-- <button id="get-started-btn">Get Started</button> -->
+
+    <main>
+
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <div class="hero-container">
+
+                <div class="welcome-title">
+
+                    <span class="hero-label">
+                        <span class="status-dot"></span>
+                        WELCOME TO FONECRIB
+                    </span>
+
+                    <h1>
+                        Welcome,
+                        <span id="user-name">Tech Lover</span>
+                    </h1>
+
+                    <h2>
+                        Discover Technology.
+                        <span>Experience More.</span>
+                    </h2>
+
+                    <p>
+                        Explore quality smartphones, laptops and accessories
+                        designed to keep you connected, productive and ahead
+                        of the game.
+                    </p>
+
+                    <a href="#products" class="hero-btn">
+                        Explore Products
+                        <span>→</span>
+                    </a>
+
+                    <div class="hero-features">
+                        <div>
+                            <strong>Quality</strong>
+                            <span>Products</span>
+                        </div>
+
+                        <div>
+                            <strong>Great</strong>
+                            <span>Experience</span>
+                        </div>
+
+                        <div>
+                            <strong>Easy</strong>
+                            <span>Shopping</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="title-img">
+                    <div class="image-glow"></div>
+                    <img src="../images & icons/Iphone Image.png" alt="Featured smartphone">
+                    <div class="floating-tag">
+                        <span>✦</span>
+                        Discover What's Next
+                    </div>
+                </div>
+
             </div>
-            <div class="title-img">
-                <img src="../images & icons/Iphone Image.png" alt="" width="365px">
+        </section>
+
+        <!-- PRODUCTS SECTION -->
+        <section class="products-section" id="products">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">EXPLORE OUR COLLECTION</p>
+                    <h2>Find Your Next Favourite</h2>
+                    <p>Browse our collection of devices and accessories.</p>
+                </div>
             </div>
-        </div>
-    </section>
-    <section class="section-three" id="products">
-        <h4>Browse By Category</h4>
-        <div class="categories" id="categories">
-            <p class="all">All</p>
-            <p>Smart Phones</p>
-            <p>Laptops</p>
-            <p>Headphones</p>
-            <p>Smart Watches</p>
-            <p>Gaming</p>
-        </div>
-        <div id="display-products">
+
+            <!-- CATEGORY FILTERS -->
+            <div class="categories" id="categories">
+                <p class="all">All</p>
+                <p>Smart Phones</p>
+                <p>Laptops</p>
+                <p>Headphones</p>
+                <p>Smart Watches</p>
+                <p>Gaming</p>
+            </div>
+
+            <!-- PRODUCTS ARE DISPLAYED HERE BY JAVASCRIPT -->
+            <div id="display-products">
+                <p class="products-loading">Loading products...</p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer" id="about-us">
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+                <a href="#home" class="footer-logo">
+                    FoneCrib<span>.</span>
+                </a>
+
+                <p>
+                    Your destination for quality smartphones and accessories.
+                    Find the technology you need, all in one place.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Explore</h3>
+                <a href="#home">Home</a>
+                <a href="#products">Products</a>
+                <a href="#categories">Categories</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Company</h3>
+                <a href="#about-us">About Us</a>
+                <a href="#about-us">Our Story</a>
+                <a href="#about-us">Contact</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Support</h3>
+                <a href="#about-us">Help Center</a>
+                <a href="#about-us">Privacy Policy</a>
+                <a href="#about-us">Terms of Service</a>
+            </div>
 
         </div>
-    </section>
-    <footer>
-        <div class="ft-title" id="about-us">
-            <div>
-                <h3>Product</h3>
-                <p>Overview</p>
-                <p>Features</p>
-                <p>Tutorials</p>
-                <p>Pricing</p>
-                <p>Releases</p>
-            </div>
-            <div>
-                <h3>Company</h3>
-                <p>About</p>
-                <p>Press</p>
-                <p>Careers</p>
-                <p>Contact</p>
-                <p>Partners</p>
-            </div>
-            <div>
-                <h3>Support</h3>
-                <p>Help Centers</p>
-                <p>Terms of Service</p>
-                <p>Legal</p>
-                <p>Privacy Policy</p>
-                <p>Status</p>
-            </div>
-            <div>
-                <h3>Follow Us</h3>
-                <p>Facebook</p>
-                <p>Instagram</p>
-                <p>Twitter</p>
-                <p>TikTok</p>
-                <p>LinkedIn</p>
-            </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 FoneCrib. All rights reserved.</p>
+            <p>Technology made accessible.</p>
         </div>
-        <div class="ft-logo">
-            <img src="../images & icons/logo.png" alt="" width="70px">
-            <h5>C 2025 FONECRIB. All rights reserved.</h5>
-        </div>
+
     </footer>
 
     <script type="module" src="./script.js"></script>

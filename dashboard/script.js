@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { getFirestore, collection, doc, addDoc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { app } from "../firebase/config.js";
 import { getElement } from "../functions/utils.js";
 import { addToCart, getCartNumbers } from "../functions/cartfunctions.js";
@@ -11,81 +11,166 @@ const productsColRef = collection(DB, "products")
 const userColRef = collection(DB, "users")
 
 // DOM Elements
-const userImageEl = getElement("#user-image")
-const userNameEl = getElement("#user-name")
-const logoutBtn = getElement("#logout-btn")
-const displayEl = getElement("#display-products")
+const userImageEl = document.getElementById("user-image")
+const userNameEl = document.getElementById("user-name")
+const logoutBtn = document.getElementById("logout-btn")
+const displayEl = document.getElementById("display-products")
 
 let currentUser;
+let productsLoaded = false
 
 // Monitor Auth State
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user
-        displayUser()
-        fetchProduct()
-        getCartNumbers()
+
+        await displayUser()
+        await getCartNumbers()
+
+        if (!productsLoaded) {
+            await fetchProduct()
+            productsLoaded = true
+        }
+    } else {
+        currentUser = null
+        window.location.href = "../signin/index.html"
     }
 })
 
 // Display Logged-in User Info
 const displayUser = async () => {
     try {
-        const docRef = doc(userColRef, currentUser.uid)
-        const docSnap = await getDoc(docRef)
-        const user = docSnap.data()
+        const userRef = doc(DB, "users", currentUser.uid)
+        const userSnap = await getDoc(userRef)
+        
+        if (!userSnap.exists()) {
+            userNameEl.textContent = "there"
+            return
+        }
 
-        userNameEl.textContent = `${user.name.split(" ")[1]}!`
-        userImageEl.innerHTML = `<img src="${user.image}" alt="user" width="38px">`
+        const user = userSnap.data()
+
+        const firstName = user.name?.trim().split(/\s+/)[0] || "there"
+        userNameEl.textContent = `${firstName}`
+
+        if (user.image) {
+            userImageEl.innerHTML = ""
+            const image = document.createElement("img")
+            image.src = user.image
+            image.alt = "User profile"
+
+            image.onerror = () => {
+                image.src = "../images & icons/profile.png"
+            }
+
+            userImageEl.appendChild(image)
+        }
     } catch (error) {
         console.error("Error fetching user:", error)
+        userNameEl.textContent = "there!"
     }
 }
 
 // Logout Button
-logoutBtn.addEventListener("click", () => {
-    signOut(auth)
-    window.location.href = "../index.html"
+logoutBtn.addEventListener("click", async () => {
+    try {
+        await signOut(auth)
+        window.location.href = "../signin/index.html"
+    } catch (error) {
+        console.log(error)
+        alert("Unable to log out. Please try again")
+    }
 })
 
 // Fetch and Display Products
 const fetchProduct = async () => {
     try {
+        displayEl.innerHTML = `
+            <p class="products-loading">Loading products...</p>
+        `;
+
         const querySnapshot = await getDocs(productsColRef)
-        querySnapshot.forEach((ele) => {
-            const product = ele.data()
-            const productId = ele.id
+        displayEl.innerHTML = ""
+        if (querySnapshot.empty) {
+            displayEl.innerHTML = `
+                <p class="products-loading">
+                    No products available at the moment.
+                </p>
+            `;
+            return
+        }
 
-            displayEl.innerHTML += `
-                <div class="product-card">
-                    <img src="${product.image}" alt="${product.name}" width="100px"> 
-                    <p>${product.name}</p>                                      
-                    <h5>${product.price}</h5>  
-                    <button class="cart-btn" data-id="${productId}">Add to Cart</button>
-                    <button class="details-btn" data-id="${productId}">View Details</button>                               
-                </div>
-            `
-        })
+        querySnapshot.forEach((item) => {
+            const product = item.data()
+            const productId = item.id
 
-        // Event: Add to Cart
-        const cartButtons = document.querySelectorAll(".cart-btn")
-        cartButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const productId = e.target.getAttribute("data-id")
-                addToCart(productId)
+            const productCard = document.createElement("div")
+            productCard.className = "product-card"
+
+            const image = document.createElement("img")
+            image.src = product.image || ""
+            image.alt = product.name || "Product"
+            image.onerror = () => {
+                image.style.visibility = "hidden"
+            }
+
+            const productName = document.createElement("h3")
+            productName.textContent = product.name || "Unname Product"
+
+            const productPrice = document.createElement("p")
+            productPrice.textContent = product.price || "$0.00"
+
+            const cartButton = document.createElement("button")
+            cartButton.className = "cart-btn"
+            cartButton.type = "button"
+            cartButton.textContent = "Add to Cart"
+            cartButton.dataset.id = productId
+            cartButton.addEventListener("click", async () => {
+                try {
+                    cartButton.disabled = true
+                    cartButton.textContent = "Adding..."
+
+                    await addToCart(productId)
+                    await getCartNumbers()
+
+                    cartButton.textContent = "Added ✓"
+                    setTimeout(() => {
+                        cartButton.textContent = "Add to Cart"
+                        cartButton.disabled = false
+                    }, 1200)
+                } catch (error) {
+                    console.error(log)
+                    alert("Unable to add this product. Please try again.")
+                    cartButton.textContent = "Add to Cart"
+                    cartButton.disabled = "false"
+                }
             })
-        })
 
-        // Event: View Details
-        const viewButtons = document.querySelectorAll(".details-btn")
-        viewButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const productId = e.target.getAttribute("data-id")
+            const detailsButton = document.createElement("button")
+            detailsButton.className = "details-btn"
+            detailsButton.type = "button"
+            detailsButton.textContent = "View Details"
+            detailsButton.addEventListener("click", () => {
                 redirectToSinglePage(productId)
             })
+
+            productCard.append(
+                image,
+                productName,
+                productPrice,
+                cartButton,
+                detailsButton
+            )
+
+            displayEl.appendChild(productCard)
         })
     } catch (error) {
         console.error("Error fetching products:", error)
+        displayEl.innerHTML = `
+            <p class="products-loading">
+                Unable to load products. Please refresh the page.
+            </p>
+        `;
     } finally {
         console.log("DONE fetching products")
     }
@@ -93,5 +178,5 @@ const fetchProduct = async () => {
 
 // Redirect to Single Product Page
 const redirectToSinglePage = (id) => {
-    window.location.href = `../Single Product Page/index.html?id=${id}`
+    window.location.href = `../Single Product Page/index.html?id=${encodeURIComponent(id)}`
 }
