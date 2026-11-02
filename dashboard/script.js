@@ -75,7 +75,7 @@ const displayUser = async () => {
 logoutBtn.addEventListener("click", async () => {
     try {
         await signOut(auth)
-        window.location.href = "../signin/index.html"
+        window.location.href = "../homepage/index.html"
     } catch (error) {
         console.log(error)
         alert("Unable to log out. Please try again")
