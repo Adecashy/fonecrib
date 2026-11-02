@@ -29,11 +29,11 @@ cartBtnEl?.addEventListener("click", () => {
 })
 
 loginBtnEl?.addEventListener("click", ()=>{
-    window.location.href = "./signin/index.html"
+    window.location.href = "../signin/index.html"
 })
 
 getStartedBtnEl?.addEventListener("click", ()=>{
-    window.location.href = "./signup/index.html"
+    window.location.href = "../signup/index.html"
 })
 
 const displayProducts = async () => {
@@ -130,7 +130,7 @@ const displayProducts = async () => {
 
 // Redirect to Single Product Page
 const redirectToSinglePage = (id) => {
-    window.location.href = `./Single Product Page/index.html?id=${id}`
+    window.location.href = `../Single Product Page/index.html?id=${id}`
 }
 
 displayProducts()
