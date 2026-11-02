@@ -41,13 +41,19 @@ export const getCartNumbers = async () => {
         const cartEl = getElement("#cart-no");
         const user = auth.currentUser;
 
+        if (!cartEl) return
+
         if (!user) {
             cartEl.textContent = "0";
             return;
         }
 
         const cartItems = await getCartItems(user.uid);
-        cartEl.textContent = cartItems?.size || 0;
+        let totalQuantity = 0
+        cartItems?.forEach((item) => {
+            totalQuantity += Number(item.data().quantity) || 1
+        })
+        cartEl.textContent = totalQuantity
     } catch (error) {
         console.error("Error getting cart numbers:", error);
     }

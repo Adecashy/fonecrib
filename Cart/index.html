@@ -1,123 +1,242 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="description" content="Review your FoneCrib shopping cart and checkout.">
+    <title>My Cart | FoneCrib</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-      <header>
-        <div class="logo">
-            <a href="../dashboard/index.html"><img src="../images & icons/logo.png" alt="" width="60px"></a>
-        </div>
-        <div class="nav-title">
-            <a href="">Home</a>
-            <a href="">Product</a>
-            <a href="">Categories</a>
-            <a href="">About Us</a>
-        </div>
-        <div class="icon-bar">
-            <div class="cart">
-                <img src="../images & icons/cart.png" alt="" width="30px">
-                <span id="cart-no">0</span>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../homepage/index.html" class="logo">
+                <img src="../images & icons/logo.png" alt="FoneCrib logo">
+            </a>
+
+            <nav class="nav-links">
+                <a href="../homepage/index.html">Home</a>
+                <a href="../homepage/index.html#products">Products</a>
+                <a href="../homepage/index.html#categories">Categories</a>
+                <a href="../homepage/index.html#about-us">About Us</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="./index.html" class="cart-link" aria-label="Shopping cart">
+                    <img src="../images & icons/cart.png" alt="">
+                    <span id="cart-no">0</span>
+                </a>
+
+                <div id="user-image" class="user-image">
+                    <img src="../images & icons/profile.png" alt="Profile">
+                </div>
+
+                <button id="logout-btn" class="logout-btn" type="button">
+                    Logout
+                </button>
             </div>
-            <div id="user-image">
-                <img src="../images & icons/profile.png" alt="" width="20px">
-            </div>
-            <button id="logout-btn">Logout</button>
         </div>
     </header>
-    <section class="section-one">
-        <div class="title">
-            <p>Home</p>
-            <span>></span>
-            <p>Cart (<span id="no-of-cart"></span>)</p>   
-        </div>
-    </section>
-    <section class="section-two">
-        <div id="display-cart-items">
 
-        </div>
-        <div class="cart-summary">
-            <h2>Cart Summary</h2>
-            <div id="cart-totals">
-                <p>Subtotal: <span id="subtotal"></span></p>
-                <p>Tax(10%): <span id="tax"></span></p>
-                <p>Shipping Fee: <span id="shipping"></span></p>
-                <p class="total">Total: <span id="cart-total"></span></p>
-                <button id="proceed-btn">PROCEED TO CHECKOUT</button>
-            </div>
-        </div>
-    </section>
-    <section class="section-three" id="section-three">
-        <div id="payment-section" >
-            <h3>Payment Section</h3>
-            
-            <form id="card-payment-form">
-                <label>Cardholder Name</label>
-                <input type="text" id="cardholder-name" placeholder="Enter Card Name" required style="width:100%; margin-bottom:10px;">
+    <main>
+        <section class="breadcrumb-section">
+            <div class="page-container">
+                <div class="breadcrumb">
+                    <a href="../homepage/index.html">Home</a>
+                    <span>/</span>
+                    <span>Shopping Cart</span>
+                </div>
 
-                <label>Card Number</label>
-                <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="16" required style="width:100%; margin-bottom:10px;">
-
-                <div class="inner-div">
+                <div class="page-heading">
                     <div>
-                        <label>Expiry Date</label>
-                        <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="4" required style="width:100%; margin-bottom:10px;">
+                        <p class="eyebrow">YOUR SHOPPING BAG</p>
+                        <h1>Shopping Cart</h1>
+                        <p class="heading-description">
+                            Review your items before proceeding to checkout.
+                        </p>
                     </div>
-                    <div>
-                        <label>CVV</label>
-                        <input type="password" id="cvv" placeholder="123" maxlength="3" required style="width:100%; margin-bottom:10px;"></div>
+
+                    <div class="item-count">
+                        <span id="no-of-cart">0</span> items
                     </div>
-                <label>Amount to Pay</label>
-                <input type="text" id="amount-to-pay" readonly style="width:100%; margin-bottom:15px; background:#f8f8f8;">
-
-                <button id="form-btn" type="submit" style="width:100%; background:#28a745; color:white; border:none; cursor:pointer;">
-                PAY NOW
-                </button>
-            </form>
-        </div>
-
-    </section>
-     <footer>
-        <div class="ft-title">
-            <div>
-                <h3>Product</h3>
-                <p>Overview</p>
-                <p>Features</p>
-                <p>Tutorials</p>
-                <p>Pricing</p>
-                <p>Releases</p>
+                </div>
             </div>
-            <div>
-                <h3>Company</h3>
-                <p>About</p>
-                <p>Press</p>
-                <p>Careers</p>
-                <p>Contact</p>
-                <p>Partners</p>
+        </section>
+
+        <section class="cart-section page-container">
+            <div class="cart-content">
+                <div class="cart-items-panel">
+                    <div class="panel-heading">
+                        <h2>Your Items</h2>
+                        <a href="../homepage/index.html">Continue shopping</a>
+                    </div>
+
+                    <div id="display-cart-items">
+                        <div class="cart-loading">Loading your cart...</div>
+                    </div>
+                </div>
+
+                <aside class="cart-summary">
+                    <h2>Order Summary</h2>
+
+                    <div id="cart-totals">
+                        <div class="summary-row">
+                            <p>Subtotal</p>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <p>Tax (10%)</p>
+                            <span id="tax">$0.00</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <p>Shipping Fee</p>
+                            <span id="shipping">$0.00</span>
+                        </div>
+
+                        <div class="summary-divider"></div>
+
+                        <div class="summary-row grand-total">
+                            <p>Total</p>
+                            <span id="cart-total">$0.00</span>
+                        </div>
+
+                        <button id="proceed-btn" type="button">
+                            Proceed to Checkout
+                            <span>→</span>
+                        </button>
+
+                        <div class="secure-note">
+                            <span>🔒</span>
+                            <p>Your checkout information is handled securely.</p>
+                        </div>
+                    </div>
+                </aside>
             </div>
-            <div>
+        </section>
+
+        <section class="payment-section" id="section-three">
+            <div class="payment-container">
+                <div class="payment-heading">
+                    <p class="eyebrow">FINAL STEP</p>
+                    <h2>Payment Details</h2>
+                    <p>Complete the form to continue with your checkout demo.</p>
+                </div>
+
+                <div id="payment-section">
+                    <form id="card-payment-form">
+                        <div class="form-group">
+                            <label for="cardholder-name">Cardholder Name</label>
+                            <input
+                                type="text"
+                                id="cardholder-name"
+                                placeholder="Enter cardholder name"
+                                autocomplete="cc-name"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input
+                                type="text"
+                                id="card-number"
+                                placeholder="0000 0000 0000 0000"
+                                maxlength="19"
+                                inputmode="numeric"
+                                autocomplete="cc-number"
+                                required
+                            >
+                        </div>
+
+                        <div class="payment-fields">
+                            <div class="form-group">
+                                <label for="expiry-date">Expiry Date</label>
+                                <input
+                                    type="text"
+                                    id="expiry-date"
+                                    placeholder="MM/YY"
+                                    maxlength="5"
+                                    autocomplete="cc-exp"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input
+                                    type="password"
+                                    id="cvv"
+                                    placeholder="CVV"
+                                    maxlength="4"
+                                    inputmode="numeric"
+                                    autocomplete="cc-csc"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount-to-pay">Amount to Pay</label>
+                            <input
+                                type="text"
+                                id="amount-to-pay"
+                                value="$0.00"
+                                readonly
+                            >
+                        </div>
+
+                        <button id="form-btn" type="submit">
+                            Pay Now
+                        </button>
+
+                        <p class="demo-notice">
+                            Demo only: this form does not process real card payments.
+                            Do not enter real payment card details.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="../homepage/index.html" class="footer-logo">FoneCrib<span>.</span></a>
+                <p>
+                    Your destination for quality smartphones and accessories.
+                    Find the technology you need, all in one place.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Explore</h3>
+                <a href="../homepage/index.html">Home</a>
+                <a href="../homepage/index.html#products">Products</a>
+                <a href="../homepage/index.html#categories">Categories</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Account</h3>
+                <a href="../signin/index.html">Sign In</a>
+                <a href="../signup/index.html">Create Account</a>
+                <a href="./index.html">Shopping Cart</a>
+            </div>
+
+            <div class="footer-column">
                 <h3>Support</h3>
-                <p>Help Centers</p>
-                <p>Terms of Service</p>
-                <p>Legal</p>
-                <p>Privacy Policy</p>
-                <p>Status</p>
-            </div>
-            <div>
-                <h3>Follow Us</h3>
-                <p>Facebook</p>
-                <p>Instagram</p>
-                <p>Twitter</p>
-                <p>TikTok</p>
-                <p>LinkedIn</p>
+                <a href="../homepage/index.html#about-us">About Us</a>
+                <a href="../homepage/index.html#contact">Contact</a>
             </div>
         </div>
-        <div class="ft-logo">
-            <img src="../images & icons/logo.png" alt="" width="70px">
-            <h5>C 2025 FONECRIB. All rights reserved.</h5>
+
+        <div class="footer-bottom">
+            <p>© 2026 FoneCrib. All rights reserved.</p>
+            <p>Made for better shopping.</p>
         </div>
     </footer>
 

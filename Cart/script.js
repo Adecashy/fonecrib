@@ -9,254 +9,308 @@ const DB = getFirestore(app);
 const userColRef = collection(DB, "users");
 let currentUser;
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
-        getCartNumbers();
-        fetchCartItems();
-        displayUser()
-    }
-});
-
-const displayCartItemEl = getElement("#display-cart-items");
-const noOfCartEl = getElement("#no-of-cart")
-const userImageEl = getElement("#user-image")
-const logoutBtnEl = getElement("#logout-btn")
-const proceedBtnEl = getElement("#proceed-btn")
+const displayCartItemEl = document.getElementById("display-cart-items");
+const noOfCartEl = document.getElementById("no-of-cart");
+const cartNumberEl = document.getElementById("cart-no");
+const userImageEl = document.getElementById("user-image");
+const logoutBtnEl = document.getElementById("logout-btn");
+const proceedBtnEl = document.getElementById("proceed-btn");
 
 const cardForm = document.getElementById("card-payment-form");
+const formBtnEl = document.getElementById("form-btn");
 const amountToPayInput = document.getElementById("amount-to-pay");
 
-// Elements for totals breakdown
-let subtotalEl = getElement("#subtotal");
-let taxEl = getElement("#tax");
-let shippingEl = getElement("#shipping");
-const cartTotalEl = getElement("#cart-total");
+const subtotalEl = document.getElementById("subtotal");
+const taxEl = document.getElementById("tax");
+const shippingEl = document.getElementById("shipping");
+const cartTotalEl = document.getElementById("cart-total");
 
 // Constants for tax and shipping
-const TAX_RATE = 0.01; // 10%
-const SHIPPING_FEE = 0.02; // fixed fee, adjust as needed
+
+const TAX_RATE = 0.10; // 10%
+const SHIPPING_FEE = 0;
+
+// Format all prices in USD
+const formatPrice = (amount) => {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+    }).format(amount)
+}
+
+// Convert product price strings like "$899.00" to numbers
+const parsePrice = (price) => {
+    return parseFloat(
+        String(price || "0").replace(/[^0-9.]/g, "")
+    ) || 0
+}
 
 // Display Logged-in User Info
 const displayUser = async () => {
     try {
-        const docRef = doc(userColRef, currentUser.uid)
-        const docSnap = await getDoc(docRef)
-        const user = docSnap.data()
+        const userRef = doc(DB, "users", currentUser.uid)
+        const userSnap = await getDoc(userRef)
+        if (userSnap.exists()) {
+            const user = userSnap.data()
 
-        userImageEl.innerHTML = `<img src="${user.image}" alt="user" width="38px">`
+            if (user.image) {
+                userImageEl.innerHTML = ""
+
+                const image = document.createElement("img")
+                image.src = user.image
+                image.alt = "User profile"
+                image.width = 38
+                image.height = 38
+
+                userImageEl.appendChild(image)
+            }
+        }
     } catch (error) {
         console.error("Error fetching user:", error)
     }
 }
 
-logoutBtnEl.addEventListener("click", () => {
-    signOut(auth)
-    window.location.href = "../homepage/index.html"
-})
+const updateCartBadge = async (cartItems) => {
+    let totalQuantity = 0
+
+    cartItems.forEach((item) => {
+        const data = item.data()
+        totalQuantity += Number(data.quantity) || 1
+    })
+
+    noOfCartEl.textContent = totalQuantity
+    cartNumberEl.textContent = totalQuantity
+}
 
 const updateCartTotal = () => {
     let subtotal = 0;
     const cartItems = document.querySelectorAll(".cart-item");
 
-    cartItems.forEach(item => {
-        let price = item.dataset.price || "0";
-        price = parseFloat(price.replace(/[^0-9.]/g, ""));
+    cartItems.forEach((item) => {
+       const price = parsePrice(item.dataset.price)
 
         const quantityEl = item.querySelector(".quantity");
-        const quantity = parseInt(quantityEl.textContent.trim() || "0", 10);
+        const quantity = Number(quantityEl.textContent) || 1;
 
-        if (!isNaN(price) && !isNaN(quantity)) {
-            subtotal += price * quantity;
-        }
+        subtotal += price * quantity
     });
 
     const tax = subtotal * TAX_RATE;
-    const shipping = subtotal * SHIPPING_FEE;
+    const shipping = subtotal > 0 ? SHIPPING_FEE : 0;
     const grandTotal = subtotal + tax + shipping;
 
-    // Create totals elements if they don't exist
-    if (!subtotalEl) {
-        subtotalEl = document.createElement("p");
-        subtotalEl.id = "subtotal";
-        cartTotalEl.parentNode.insertBefore(subtotalEl, cartTotalEl);
-    }
-    if (!taxEl) {
-        taxEl = document.createElement("p");
-        taxEl.id = "tax";
-        cartTotalEl.parentNode.insertBefore(taxEl, cartTotalEl);
-    }
-    if (!shippingEl) {
-        shippingEl = document.createElement("p");
-        shippingEl.id = "shipping";
-        cartTotalEl.parentNode.insertBefore(shippingEl, cartTotalEl);
-    }
+    subtotalEl.textContent = formatPrice(subtotal);
+    taxEl.textContent = formatPrice(tax);
+    shippingEl.textContent = formatPrice(shipping)
+    cartTotalEl.textContent = formatPrice(grandTotal)
 
-    subtotalEl.textContent = ` $${subtotal.toFixed(2)}`;
-    taxEl.textContent = ` $${tax.toFixed(2)}`;
-    shippingEl.textContent = ` $${shipping.toFixed(2)}`;
-    cartTotalEl.textContent = ` $${grandTotal.toFixed(2)}`;
+    amountToPayInput.value = formatPrice(grandTotal)
 
-    if (amountToPayInput) {
-        amountToPayInput.value = `$${grandTotal.toFixed(2)}`;
-    }
+    proceedBtnEl.disabled = subtotal <= 0
 };
 
+const createCartItem = (item) => {
+    const cartItem = item.data()
+    const cartId = item.id
+
+    const wrapper = document.createElement("div")
+    wrapper.className = "cart-item"
+    wrapper.dataset.price = cartItem.price || "0"
+
+    const left = document.createElement("div")
+    left.className = "left"
+
+    const image = document.createElement("img")
+    image.src = cartItem.image || ""
+    image.alt = cartItem.name || "Product image"
+    image.onerror = () => {
+        image.style.visibility = "hidden"
+    }
+
+    const productInfo = document.createElement("div")
+
+    const name = document.createElement("p")
+    name.textContent = cartItem.name || "Unnamed product"
+
+    const price = document.createElement("p")
+    price.textContent = formatPrice(parsePrice(cartItem.price))
+
+    productInfo.append(name, price)
+    left.append(image, productInfo)
+
+    const right = document.createElement("div")
+    right.className = "right"
+
+    const math = document.createElement("div")
+    math.className = "math"
+
+    const decreaseBtn = document.createElement("button")
+    decreaseBtn.className = "dec-btn"
+    decreaseBtn.type = "button"
+    decreaseBtn.textContent = "-"
+    decreaseBtn.setAttribute("btnId", cartId)
+    decreaseBtn.setAttribute("aria-label", "Decrease quantity")
+
+    const quantity = document.createElement("span")
+    quantity.className = "quantity"
+    quantity.textContent = Number(cartItem.quantity) || 1
+    quantity.setAttribute("btnId", cartId)
+
+    const increaseBtn = document.createElement("button")
+    increaseBtn.className = "inc-btn"
+    increaseBtn.type = "button"
+    increaseBtn.textContent = "+"
+    increaseBtn.setAttribute("btnId", cartId)
+    increaseBtn.setAttribute("aria-label", "Increase quantity")
+
+    math.append(decreaseBtn, quantity, increaseBtn)
+
+    const removeBtn = document.createElement("button")
+    removeBtn.className = "delete-btn"
+    removeBtn.type = "button"
+    removeBtn.textContent = "Remove"
+    removeBtn.setAttribute("btnId", cartId)
+
+    right.append(math, removeBtn)
+    wrapper.append(left, right)
+
+    return wrapper
+}
+
 const attachCartEventListeners = () => {
-    document.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-            const cartId = e.target.getAttribute("btnId");
-            await removeCartItem(cartId);
-            fetchCartItems();
-            getCartNumbers();
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", async () => {
+            const id = button.getAttribute("btnId");
+
+            button.disabled = true
+
+            await removeCartItem(id);
+            await fetchCartItems();
         });
     });
 
-    document.querySelectorAll(".inc-btn").forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-            const id = e.target.getAttribute("btnId");
+    document.querySelectorAll(".inc-btn").forEach(button => {
+        button.addEventListener("click", async () => {
+            const id = button.getAttribute("btnId");
             const quantityEl = document.querySelector(`.quantity[btnId="${id}"]`);
-            let newQuantity = parseInt(quantityEl.textContent) + 1;
+
+            const newQuantity = Number(quantityEl.textContent) + 1;
             quantityEl.textContent = newQuantity;
-
-            await updateDoc(doc(DB, "users", currentUser.uid, "cart", id), {
-                quantity: newQuantity
-            });
-
-            getCartNumbers();
             updateCartTotal();
-        });
-    });
 
-    document.querySelectorAll(".dec-btn").forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-            const id = e.target.getAttribute("btnId");
-            const quantityEl = document.querySelector(`.quantity[btnId="${id}"]`);
-            let newQuantity = parseInt(quantityEl.textContent);
-
-            if (newQuantity > 1) {
-                newQuantity--;
-                quantityEl.textContent = newQuantity;
-
+            button.disabled = true
+            try {
                 await updateDoc(doc(DB, "users", currentUser.uid, "cart", id), {
                     quantity: newQuantity
                 });
+                await fetchCartItems()
+            } catch (error) {
+                console.error("Error updating quantity:", error)
+                alert("Unable to update quantity. Please try again")
+                await fetchCartItems()
+            } finally {
+                button.disabled = false
+            }
+        });
+    });
 
-                getCartNumbers();
-                updateCartTotal();
+    document.querySelectorAll(".dec-btn").forEach(button => {
+        button.addEventListener("click", async () => {
+            const id = button.getAttribute("btnId");
+            const quantityEl = document.querySelector(`.quantity[btnId="${id}"]`);
+
+            let newQuantity = Number(quantityEl.textContent);
+
+            if (newQuantity <= 1) return
+            newQuantity--
+
+            quantityEl.textContent = newQuantity
+            updateCartTotal()
+
+            button.disabled = true
+
+            try {
+                await updateDoc(doc(DB, "users", currentUser.uid, "cart", id), {
+                    quantity: newQuantity
+                });
+                await fetchCartItems()
+            } catch (error) {
+                console.error("Error updating quantity:", error)
+                alert("unable to update quantity. Please try again")
+                await fetchCartItems()
+            } finally {
+                button.disabled = false
             }
         });
     });
 };
 
+// Display empty cart
+const displayEmptyCart = (message = "Your shopping cart is empty") => {
+    displayCartItemEl.innerHTML = `
+        <div class="empty-cart">
+            <h3>${message}</h3>
+            <p>Discover something you will love.</p>
+            <a href="../dashboard/index.html">
+                <button type="button">Start Shopping</button>
+            </a>
+        </div>
+    `;
+
+    noOfCartEl.textContent = "0"
+    cartNumberEl.textContent = "0"
+
+    subtotalEl.textContent = formatPrice(0)
+    taxEl.textContent = formatPrice(0)
+    shippingEl.textContent = formatPrice(0)
+    cartTotalEl.textContent = formatPrice(0)
+    amountToPayInput.value = formatPrice(0)
+
+    proceedBtnEl.disabled = true
+}
+
+// Fetch and display cart items
 const fetchCartItems = async () => {
+    if (!currentUser) return
+
     try {
         const cartItems = await getCartItems(currentUser.uid);
-        noOfCartEl.textContent = cartItems.size
-
         if (!cartItems || cartItems.size === 0) {
-            displayCartItemEl.innerHTML = `
-                <div class="empty-cart">
-                    <h3>Oops! Your cart is empty</h3>
-                    <a href="../dashboard/index.html"><button>Start Shopping</button></a>
-                </div>
-            `;
-            if (subtotalEl) subtotalEl.textContent = "$0.00";
-            if (taxEl) taxEl.textContent = "$0.00";
-            if (shippingEl) shippingEl.textContent = "$0.00";
-            cartTotalEl.textContent = "$0.00";
-            return;
+            displayEmptyCart()
+            return
         }
 
         displayCartItemEl.innerHTML = "";
 
-        cartItems.forEach(item => {
-            const cartItem = item.data();
-            displayCartItemEl.innerHTML += `
-                <div class="cart-item" btnId="${item.id}" data-price="${cartItem.price}">
-                    <div class="left">
-                        <img src="${cartItem.image}" alt="" width="80px">
-                        <div>
-                            <p>${cartItem.name}</p>          
-                            <p>${cartItem.price}</p> 
-                        </div>
-                    </div>
-                    <div class="right">
-                        <div class="math">
-                            <button class="dec-btn" btnId="${item.id}">-</button>
-                            <span class="quantity" btnId="${item.id}">${cartItem.quantity || 1}</span>
-                            <button class="inc-btn" btnId="${item.id}">+</button>
-                        </div>
-                        <button class="delete-btn" btnId="${item.id}">Remove</button>          
-                    </div>
-                </div>
-            `;
+        cartItems.forEach((item) => {
+            displayCartItemEl.appendChild(createCartItem(item))
         });
+
+        await updateCartBadge(cartItems)
 
         attachCartEventListeners();
         updateCartTotal();
 
     } catch (error) {
         console.error(error);
+        displayCartItemEl.innerHTML = `
+            <div class="empty-cart">
+                <h3>Unable to load your cart</h3>
+                <p>Please refresh the page and try again.</p>
+            </div>
+        `;
     }
 };
 
+// Proceed to Checkout
 proceedBtnEl.addEventListener("click", ()=>{
-    getElement("#section-three").scrollIntoView({
-        behavior: "smooth"
+    if (proceedBtnEl.disabled) return
+
+    document.getElementById("section-three").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
     })
 })
-
-const formBtnEl = document.getElementById("form-btn");
-
-const payment = async () => {
-    formBtnEl.disabled = true
-    formBtnEl.textContent = "PROCESSING..."
-
-    // Get element references
-    const cardholderNameEl = document.getElementById("cardholder-name");
-    const cardNumberEl = document.getElementById("card-number");
-    const expiryDateEl = document.getElementById("expiry-date");
-    const cvvEl = document.getElementById("cvv");   
-
-    // Get trimmed values
-    const cardholderName = cardholderNameEl.value.trim();
-    const cardNumber = cardNumberEl.value.trim();
-    const expiryDate = expiryDateEl.value.trim();
-    const cvv = cvvEl.value.trim();
-
-    try {
-        if (!cardholderName || !cardNumber || !expiryDate || !cvv) {
-            alert("Please fill in all card details.");
-            return;
-        }
-
-        // Simulate processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        alert(`Payment successful for ${cardholderName}`);
-
-        await clearCart()
-
-    } catch (error) {
-        console.log(error);
-    } finally {
-        formBtnEl.textContent = "PAY NOW";
-
-        // Reset form fields
-        cardholderNameEl.value = "";
-        cardNumberEl.value = "";
-        expiryDateEl.value = "";
-        cvvEl.value = "";
-    }
-};
-
-// Attach event listener if form exists
-if (cardForm) {
-    cardForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        payment();
-    });
-}
 
 const clearCart = async () => {
     try {
@@ -273,15 +327,21 @@ const clearCart = async () => {
         // Reset UI
         displayCartItemEl.innerHTML = `
             <div class="empty-cart">
-                <h3>Thank you! Your payment was successful 🎉</h3>
+                <h3>Thank you! 🎉</h3>
+                <p>Your demo checkout has been completed.</p>
                 <a href="../dashboard/index.html"><button>Continue Shopping</button></a>
             </div>
         `;
         noOfCartEl.textContent = "0";
-        if (subtotalEl) subtotalEl.textContent = "$0.00";
-        if (taxEl) taxEl.textContent = "$0.00";
-        if (shippingEl) shippingEl.textContent = "$0.00";
-        cartTotalEl.textContent = "$0.00";
+        cartNumberEl.textContent = "0"
+
+        subtotalEl.textContent = formatPrice(0)
+        taxEl.textContent = formatPrice(0)
+        shippingEl.textContent = formatPrice(0)
+        cartTotalEl.textContent = formatPrice(0)
+        amountToPayInput.value = formatPrice(0)
+
+        await getCartNumbers()
 
         displayCartItemEl.scrollIntoView({
             behavior: "smooth",
@@ -290,6 +350,68 @@ const clearCart = async () => {
 
     } catch (error) {
         console.error("Error clearing cart:", error);
+        alert("There was a problem clearing your cart")
     }
 };
+
+// Existing simulated payment flow
+const payment = async () => {
+    if (!currentUser) {
+        alert("Please sign in before checking out.")
+        return
+    }
+
+    if (document.querySelectorAll(".cart-item").length === 0) {
+        alert("Your cart is empty.")
+        return
+    }
+
+    formBtnEl.disabled = true
+    formBtnEl.textContent = "PROCESSING..."
+
+    try {
+        await new Promise((resolve) => setTimeout(resolve, 1500))
+        alert("Demo checkout completed successfully")
+        await clearCart()
+        cardForm.reset()
+    } catch (error) {
+        console.log(error)
+        alert("Something went wrong. Please try again")
+    } finally {
+        formBtnEl.disabled = false
+        formBtnEl.textContent = "Pay Now"
+    }
+};
+
+cardForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+
+    if (!cardForm.reportValidity()) return
+
+    payment()
+})
+
+logoutBtnEl.addEventListener("click", async () => {
+    try {
+        await signOut(auth)
+        window.location.href = "../homepage/index.html"
+    } catch (error) {
+        console.log(error)
+        alert("Unable to log out. Please try again")
+    }
+})
+
+// Authentication state
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        currentUser = user;
+
+        await displayUser();
+        await fetchCartItems();
+    } else {
+        currentUser = null;
+        displayEmptyCart("Please sign in to view your cart");
+    }
+});
+
 
