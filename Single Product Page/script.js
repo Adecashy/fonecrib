@@ -123,7 +123,7 @@ const getSingleProduct = async (id) => {
 
         const data = docSnap.data()
 
-        productNameEl.textcontent = data.name || "Product"
+        productNameEl.textContent = data.name || "Product"
 
         document.title = `${data.name || "Product"} | FoneCrib`
 
