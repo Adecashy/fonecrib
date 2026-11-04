@@ -150,6 +150,27 @@ button {
     border: 2px solid var(--border);
 }
 
+#user-image {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.user-initials {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
 #logout-btn {
     padding: 10px 17px;
     border: 1px solid var(--border);

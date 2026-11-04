@@ -104,15 +104,30 @@ header {
 #user-image {
     width: 38px;
     height: 38px;
+    min-width: 38px;
+    height: 38px;
     border-radius: 50%;
+    background: #2563EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-    background: #eef2ff;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
 #user-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    display: block;
+}
+
+#user-image .user-initials {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .login-btn,

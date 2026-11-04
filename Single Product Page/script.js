@@ -46,17 +46,28 @@ const displayUser = async () => {
 
         const docRef = doc(userColRef, currentUser.uid)
         const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-            const userData = docSnap.data()
+
+        if (!docSnap.exists()) {
+            userImageEl.innerHTML = `<span class="user-initials">U</span>`
+            return
         }
-        userImageEl.innerHTML = `
-            <img
-                src="${userData.image || "../images & icons/profile.png"}"
-                alt="User profile"
-            >
-        `
+        const userData = docSnap.data()
+        
+        const fullName = userData.name?.trim() || "User"
+        const nameParts = fullName.split(/\s+/)
+        const initials = nameParts.slice(0, 2).map(name => name.charAt(0).toUppercase().join(""))
+        
+        userImageEl.innerHTML = `<span class="user-initials">${initials}</span>`
+
+        // userImageEl.innerHTML = `
+        //     <img
+        //         src="${userData.image || "../images & icons/profile.png"}"
+        //         alt="User profile"
+        //     >
+        // `
     } catch (error) {
         console.error("Error fetching user:", error)
+        userImageEl.innerHTML = `<span class="user-initials">U</span>`
     }
 }
 

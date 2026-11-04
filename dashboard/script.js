@@ -49,25 +49,32 @@ const displayUser = async () => {
         }
 
         const user = userSnap.data()
+        
+        const fullName = user.name?.trim() || "User"
+        const nameParts = fullName.split(/\s+/)
 
-        const firstName = user.name?.trim().split(/\s+/)[0] || "there"
+        const firstName = nameParts[0]
         userNameEl.textContent = `${firstName}`
 
-        if (user.image) {
-            userImageEl.innerHTML = ""
-            const image = document.createElement("img")
-            image.src = user.image
-            image.alt = "User profile"
+        // Generate initials 
+        const initials = nameParts.slice(0, 2).map(name => name.charAt(0).toUppercase()).join("")
 
-            image.onerror = () => {
-                image.src = "../images & icons/profile.png"
-            }
+        userImageEl.innerHTML = `<span class="user-initials">${initials}</span>`
 
-            userImageEl.appendChild(image)
-        }
+        // if (user.image) {
+        //     userImageEl.innerHTML = ""
+        //     const image = document.createElement("img")
+        //     image.src = user.image
+        //     image.alt = "User profile"
+
+        //     image.onerror = () => {
+        //         image.src = "../images & icons/profile.png"
+        //     }
+
+        //     userImageEl.appendChild(image)
+        // }
     } catch (error) {
         console.error("Error fetching user:", error)
-        userNameEl.textContent = "there!"
     }
 }
 
