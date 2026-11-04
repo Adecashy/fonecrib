@@ -57,9 +57,15 @@ const displayUser = async () => {
         userNameEl.textContent = `${firstName}`
 
         // Generate initials 
-        const initials = nameParts.slice(0, 2).map(name => name.charAt(0).toUppercase()).join("")
+        const initials = nameParts.slice(0, 2).map(name => name[0].toUppercase()).join("")
 
-        userImageEl.innerHTML = `<span class="user-initials">${initials}</span>`
+        userImageEl.innerHTML = ""
+
+        const initialsEl = document.createElement("span")
+        initialsEl.className = "user-initials"
+        initialsEl.textContent = initials
+
+        userImageEl.appendChild(initialsEl)
 
         // if (user.image) {
         //     userImageEl.innerHTML = ""

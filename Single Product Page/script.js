@@ -44,20 +44,26 @@ const displayUser = async () => {
     try {
         if (!currentUser) return
 
-        const docRef = doc(userColRef, currentUser.uid)
-        const docSnap = await getDoc(docRef)
+        const userRef = doc(userColRef, currentUser.uid)
+        const userSnap = await getDoc(userRef)
 
-        if (!docSnap.exists()) {
+        if (!userSnap.exists()) {
             userImageEl.innerHTML = `<span class="user-initials">U</span>`
             return
         }
-        const userData = docSnap.data()
+        const userData = userSnap.data()
         
         const fullName = userData.name?.trim() || "User"
         const nameParts = fullName.split(/\s+/)
-        const initials = nameParts.slice(0, 2).map(name => name.charAt(0).toUppercase().join(""))
+        const initials = nameParts.slice(0, 2).map(name => name[0].toUppercase().join(""))
         
-        userImageEl.innerHTML = `<span class="user-initials">${initials}</span>`
+        userImageEl.innerHTML = ""
+
+        const initialsEl = document.createElement("span")
+        initialsEl.className = "user-initials"
+        initialsEl.textContent = initials
+
+        userImageEl.appendChild(initialsEl)
 
         // userImageEl.innerHTML = `
         //     <img
